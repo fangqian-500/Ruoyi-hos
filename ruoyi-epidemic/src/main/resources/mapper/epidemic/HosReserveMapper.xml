@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.epidemic.mapper.HosReserveMapper">
+    
+    <resultMap type="HosReserve" id="HosReserveResult">
+        <result property="id"    column="id"    />
+        <result property="perCode"    column="per_code"    />
+        <result property="doctor"    column="doctor"    />
+        <result property="reserveTime"    column="reserve_time"    />
+        <result property="dept"    column="dept"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectHosReserveVo">
+        select re.id, re.per_code, re.doctor, re.reserve_time, re.dept,dept.dept_name from hos_reserve re left join sys_dept dept
+        on re.dept = dept.dept_id
+    </sql>
+
+    <select id="selectHosReserveList" parameterType="HosReserve" resultMap="HosReserveResult">
+        <include refid="selectHosReserveVo"/>
+        <where>  
+            <if test="perCode != null  and perCode != ''"> and per_code = #{perCode}</if>
+            <if test="doctor != null  and doctor != ''"> and doctor = #{doctor}</if>
+            <if test="reserveTime != null "> and reserve_time = #{reserveTime}</if>
+            <if test="dept != null  and dept != ''"> and dept = #{dept}</if>
+        </where>
+    </select>
+
+
+    <select id="selectHosReserveById" parameterType="Long" resultMap="HosReserveResult">
+        <include refid="selectHosReserveVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHosReserve" parameterType="HosReserve" useGeneratedKeys="true" keyProperty="id">
+        insert into hos_reserve
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="perCode != null">per_code,</if>
+            <if test="doctor != null">doctor,</if>
+            <if test="reserveTime != null">reserve_time,</if>
+            <if test="dept != null">dept,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="perCode != null">#{perCode},</if>
+            <if test="doctor != null">#{doctor},</if>
+            <if test="reserveTime != null">#{reserveTime},</if>
+            <if test="dept != null">#{dept},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHosReserve" parameterType="HosReserve">
+        update hos_reserve
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="perCode != null">per_code = #{perCode},</if>
+            <if test="doctor != null">doctor = #{doctor},</if>
+            <if test="reserveTime != null">reserve_time = #{reserveTime},</if>
+            <if test="dept != null">dept = #{dept},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHosReserveById" parameterType="Long">
+        delete from hos_reserve where id = #{id}
+    </delete>
+
+    <delete id="deleteHosReserveByIds" parameterType="String">
+        delete from hos_reserve where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

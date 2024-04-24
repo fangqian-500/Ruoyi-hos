@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.epidemic.mapper.HosSymptomMapper">
+    
+    <resultMap type="HosSymptom" id="HosSymptomResult">
+        <result property="id"    column="id"    />
+        <result property="symptom"    column="symptom"    />
+        <result property="dateStart"    column="date_start"    />
+        <result property="dateEnd"    column="date_end"    />
+        <result property="perCode"    column="per_code"    />
+    </resultMap>
+
+    <sql id="selectHosSymptomVo">
+        select id, symptom, date_start, date_end, per_code from hos_symptom
+    </sql>
+
+    <select id="selectHosSymptomList" parameterType="HosSymptom" resultMap="HosSymptomResult">
+        <include refid="selectHosSymptomVo"/>
+        <where>  
+            <if test="symptom != null  and symptom != ''"> and symptom = #{symptom}</if>
+            <if test="dateStart != null "> and date_start = #{dateStart}</if>
+            <if test="dateEnd != null "> and date_end = #{dateEnd}</if>
+            <if test="perCode != null  and perCode != ''"> and per_code = #{perCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectHosSymptomById" parameterType="Long" resultMap="HosSymptomResult">
+        <include refid="selectHosSymptomVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHosSymptom" parameterType="HosSymptom" useGeneratedKeys="true" keyProperty="id">
+        insert into hos_symptom
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="symptom != null">symptom,</if>
+            <if test="dateStart != null">date_start,</if>
+            <if test="dateEnd != null">date_end,</if>
+            <if test="perCode != null">per_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="symptom != null">#{symptom},</if>
+            <if test="dateStart != null">#{dateStart},</if>
+            <if test="dateEnd != null">#{dateEnd},</if>
+            <if test="perCode != null">#{perCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHosSymptom" parameterType="HosSymptom">
+        update hos_symptom
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="symptom != null">symptom = #{symptom},</if>
+            <if test="dateStart != null">date_start = #{dateStart},</if>
+            <if test="dateEnd != null">date_end = #{dateEnd},</if>
+            <if test="perCode != null">per_code = #{perCode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHosSymptomById" parameterType="Long">
+        delete from hos_symptom where id = #{id}
+    </delete>
+
+    <delete id="deleteHosSymptomByIds" parameterType="String">
+        delete from hos_symptom where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

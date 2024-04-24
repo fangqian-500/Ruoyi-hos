@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.epidemic.mapper.HosAnnouncementMapper">
+    
+    <resultMap type="HosAnnouncement" id="HosAnnouncementResult">
+        <result property="id"    column="id"    />
+        <result property="context"    column="context"    />
+        <result property="title"    column="title"    />
+        <result property="dateStart"    column="date_start"    />
+        <result property="dateEnd"    column="date_end"    />
+        <result property="attach"    column="attach"    />
+    </resultMap>
+
+    <sql id="selectHosAnnouncementVo">
+        select id, context, title,date_start, date_end, attach from hos_announcement
+    </sql>
+
+    <select id="selectHosAnnouncementList" parameterType="HosAnnouncement" resultMap="HosAnnouncementResult">
+        <include refid="selectHosAnnouncementVo"/>
+        <where>  
+            <if test="context != null  and context != ''"> and context = #{context}</if>
+            <if test="dateStart != null "> and date_start = #{dateStart}</if>
+            <if test="dateEnd != null "> and date_end = #{dateEnd}</if>
+            <if test="attach != null  and attach != ''"> and attach = #{attach}</if>
+        </where>
+    </select>
+    
+    <select id="selectHosAnnouncementById" parameterType="Long" resultMap="HosAnnouncementResult">
+        <include refid="selectHosAnnouncementVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHosAnnouncement" parameterType="HosAnnouncement">
+        insert into hos_announcement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+<!--            <if test="id != null">id,</if>-->
+            <if test="context != null">context,</if>
+            <if test="title != null">title,</if>
+            <if test="dateStart != null">date_start,</if>
+            <if test="dateEnd != null">date_end,</if>
+            <if test="attach != null">attach,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+<!--            <if test="id != null">#{id},</if>-->
+            <if test="context != null">#{context},</if>
+            <if test="title != null">#{title},</if>
+            <if test="dateStart != null">#{dateStart},</if>
+            <if test="dateEnd != null">#{dateEnd},</if>
+            <if test="attach != null">#{attach},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHosAnnouncement" parameterType="HosAnnouncement">
+        update hos_announcement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="context != null">context = #{context},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="dateStart != null">date_start = #{dateStart},</if>
+            <if test="dateEnd != null">date_end = #{dateEnd},</if>
+            <if test="attach != null">attach = #{attach},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHosAnnouncementById" parameterType="Long">
+        delete from hos_announcement where id = #{id}
+    </delete>
+
+    <delete id="deleteHosAnnouncementByIds" parameterType="String">
+        delete from hos_announcement where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

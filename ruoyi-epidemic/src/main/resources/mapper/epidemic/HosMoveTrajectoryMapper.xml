@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.epidemic.mapper.HosMoveTrajectoryMapper">
+    
+    <resultMap type="HosMoveTrajectory" id="HosMoveTrajectoryResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="perCode"    column="per_code"    />
+        <result property="moveDateStart"    column="move_date_start"    />
+        <result property="moveDateEnd"    column="move_date_end"    />
+        <result property="moveCode"    column="move_code"    />
+        <result property="moveName"    column="move_name"    />
+    </resultMap>
+
+    <sql id="selectHosMoveTrajectoryVo">
+        select id, name, per_code, move_date_start, move_date_end, move_code,move_name from hos_move_trajectory
+    </sql>
+
+    <select id="selectHosMoveTrajectoryList" parameterType="HosMoveTrajectory" resultMap="HosMoveTrajectoryResult">
+        <include refid="selectHosMoveTrajectoryVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="perCode != null  and perCode != ''"> and per_code = #{perCode}</if>
+            <if test="moveDateStart != null "> and move_date_start = #{moveDateStart}</if>
+            <if test="moveDateEnd != null "> and move_date_end = #{moveDateEnd}</if>
+            <if test="moveCode != null  and moveCode != ''"> and move_code = #{moveCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectHosMoveTrajectoryById" parameterType="Long" resultMap="HosMoveTrajectoryResult">
+        <include refid="selectHosMoveTrajectoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHosMoveTrajectory" parameterType="HosMoveTrajectory">
+        insert into hos_move_trajectory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="perCode != null">per_code,</if>
+            <if test="moveDateStart != null">move_date_start,</if>
+            <if test="moveDateEnd != null">move_date_end,</if>
+            <if test="moveCode != null">move_code,</if>
+            <if test="moveName != null">move_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="perCode != null">#{perCode},</if>
+            <if test="moveDateStart != null">#{moveDateStart},</if>
+            <if test="moveDateEnd != null">#{moveDateEnd},</if>
+            <if test="moveCode != null">#{moveCode},</if>
+            <if test="moveName != null">#{moveName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHosMoveTrajectory" parameterType="HosMoveTrajectory">
+        update hos_move_trajectory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="perCode != null">per_code = #{perCode},</if>
+            <if test="moveDateStart != null">move_date_start = #{moveDateStart},</if>
+            <if test="moveDateEnd != null">move_date_end = #{moveDateEnd},</if>
+            <if test="moveCode != null">move_code = #{moveCode},</if>
+            <if test="moveName != null">move_name = #{moveName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHosMoveTrajectoryById" parameterType="Long">
+        delete from hos_move_trajectory where id = #{id}
+    </delete>
+
+    <delete id="deleteHosMoveTrajectoryByIds" parameterType="String">
+        delete from hos_move_trajectory where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
